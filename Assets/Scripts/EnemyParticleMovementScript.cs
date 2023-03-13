@@ -13,12 +13,12 @@ public class EnemyParticleMovementScript : MonoBehaviour
         characterPos = GameObject.Find("Player").transform.position;
         initialPos = this.gameObject.transform.position;
 
-        string enemyNameTroughParticle = ParticleMovementScript1.CutParticleFromName(this.gameObject.name);
+        string enemyNameThroughParticle = ParticleMovementScript1.CutParticleFromName(this.gameObject.name);
 
         //Use the enemy object as enemy type data
         for (int i = 0; i < EnemyClassScript.allNearbyEnemiesList.Count; i++)
         {
-            if (EnemyClassScript.allNearbyEnemiesList[i].getEnemyGO().name.Contains(enemyNameTroughParticle))
+            if (EnemyClassScript.allNearbyEnemiesList[i].getEnemyGO().name.Contains(enemyNameThroughParticle))
                 currEnemy = EnemyClassScript.allNearbyEnemiesList[i];
         }
     }

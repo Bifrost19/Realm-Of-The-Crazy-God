@@ -77,7 +77,7 @@ public class EnemyClassScript : MonoBehaviour
         {
             if (allNearbyEnemiesList[i].getHealth() <= 0)
             {
-                allNearbyEnemiesList[i].destoyEnemy();
+                allNearbyEnemiesList[i].destroyEnemy();
                 allNearbyEnemiesList.RemoveAt(i);
                 CameraRotationScript.worldEntitiesList.RemoveAt(i);
             }
@@ -170,7 +170,7 @@ public class Enemy
     }
 
     //Other methods
-    public void destoyEnemy()
+    public void destroyEnemy()
     {
        GameObject.Destroy(this.enemy);
     }

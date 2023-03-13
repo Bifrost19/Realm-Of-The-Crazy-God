@@ -114,13 +114,7 @@ public class CameraRotationScript : MonoBehaviour
 
     Vector3 getStrVec()
     {
-        float x, y;
         float angle = character.eulerAngles.z / MovementScript.piRelation;
-        y = Mathf.Cos(angle);
-        if (Mathf.Sin(angle) < 0)
-            x = Mathf.Sqrt(1 - y * y);
-        else
-            x = -Mathf.Sqrt(1 - y * y);
-        return new Vector3(x, y, 0);
+        return new Vector3(-Mathf.Sin(angle), Mathf.Cos(angle), 0);
     }
 }
