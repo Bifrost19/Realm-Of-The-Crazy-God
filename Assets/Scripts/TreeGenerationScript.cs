@@ -74,6 +74,12 @@ public class TreeGenerationScript : MonoBehaviour
         GetTreesInRange();
         SortTreesByHeight();
 
+        //Layer all world items(bags and other items)
+        for (int i = 0; i < EnemyClassScript.worldItemsList.Count; i++)
+        {
+            LayerMovingEntity(EnemyClassScript.worldItemsList[i], 1);
+        }
+
         Vector3 playerPos = GameObject.Find("Player").transform.position;
         int treesUnderPlayerPos = 0;
 

@@ -12,6 +12,7 @@ TagManager:
   - Ring
   - Ability
   - WorldObject
+  - WorldItem
   layers:
   - Default
   - TransparentFX

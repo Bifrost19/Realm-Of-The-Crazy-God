@@ -14,6 +14,7 @@ public class MovementScript : MonoBehaviour
             character.position += moveVec * Time.deltaTime * Player.getSpeed() / 4;
             FixSlotPosVectors(moveVec);
             TreeGenerationScript.LayerTrees();
+
         }
         if (Input.GetKey("s"))
         {

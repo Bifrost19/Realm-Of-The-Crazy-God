@@ -44,6 +44,12 @@ public class CameraRotationScript : MonoBehaviour
                     worldEntitiesList[i].transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
                 }
 
+                for (int i = 0; i < EnemyClassScript.worldItemsList.Count; i++)
+                {
+                    EnemyClassScript.worldItemsList[i].transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+                    TreeGenerationScript.LayerMovingEntity(EnemyClassScript.worldItemsList[i], 1);
+                }
+
                 for (int i = 0; i < TreeGenerationScript.allWorldOBjectsList.Count; i++)
                 {
                     TreeGenerationScript.allWorldOBjectsList[i].transform.RotateAround(TreeGenerationScript.allWorldOBjectsList[i].transform.GetChild(0).position, Vector3.forward, rotationSpeed * Time.deltaTime);
@@ -60,6 +66,12 @@ public class CameraRotationScript : MonoBehaviour
                 for (int i = 0; i < worldEntitiesList.Count; i++)
                 {
                     worldEntitiesList[i].transform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
+                }
+
+                for (int i = 0; i < EnemyClassScript.worldItemsList.Count; i++)
+                {
+                    EnemyClassScript.worldItemsList[i].transform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
+                    TreeGenerationScript.LayerMovingEntity(EnemyClassScript.worldItemsList[i], 1);
                 }
 
                 for (int i = 0; i < TreeGenerationScript.allWorldOBjectsList.Count; i++)

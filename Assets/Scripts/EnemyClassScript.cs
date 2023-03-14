@@ -8,6 +8,7 @@ public class EnemyClassScript : MonoBehaviour
     public static List<GameObject> allNearbyEnemiesGOList = new List<GameObject>();
     public static List<Enemy> allNearbyEnemiesList = new List<Enemy>();
     public GameObject[] enemyParticles;
+    public static Transform character;
 
     //Spawn variables
     public GameObject[] enemyTypes;
@@ -16,6 +17,10 @@ public class EnemyClassScript : MonoBehaviour
     public static float spawnFrequency = 100000f;
     public static float spawnCounter = 0f;
     public static int instanceCounter = 0;
+
+    //Drop rates
+    public static int brownBagDropRate = 50;
+    public static List<GameObject> worldItemsList = new List<GameObject>();
 
     public GameObject findParticleThroughEnemyName(string name)
     {
@@ -69,6 +74,7 @@ public class EnemyClassScript : MonoBehaviour
     {
         SpawnEntity();
         CollectEnemyEntitiesInList();
+        character = GameObject.Find("Player").transform;
     }
 
     public void CheckForEnemyHealth()
@@ -82,6 +88,19 @@ public class EnemyClassScript : MonoBehaviour
                 CameraRotationScript.worldEntitiesList.RemoveAt(i);
             }
 
+        }
+    }
+
+    public static void SpawnDrop(GameObject enemy)
+    {
+        Vector3 dropSpawnVec = enemy.transform.position;
+        int dropVar = Random.RandomRange(0, 100);
+        if (dropVar <= 100)
+        {
+            GameObject brownBag = Instantiate(Resources.Load("Objects/BrownBag", typeof(GameObject)) as GameObject,
+                                              dropSpawnVec, Quaternion.Euler(0, 0, character.eulerAngles.z));
+
+            worldItemsList.Add(brownBag);
         }
     }
 
@@ -172,6 +191,7 @@ public class Enemy
     //Other methods
     public void destroyEnemy()
     {
-       GameObject.Destroy(this.enemy);
+        EnemyClassScript.SpawnDrop(enemy);
+        GameObject.Destroy(this.enemy);
     }
 }
