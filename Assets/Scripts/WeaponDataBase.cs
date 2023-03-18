@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -138,6 +139,59 @@ public class WeaponDataBase : MonoBehaviour
         }
     }
 
+    //Consumable
+    void PopPanelWithName(Consumable cons, GameObject panel)
+    {
+        panel.transform.FindChild("Image").FindChild("WeaponName").GetComponent<Text>().text = cons.SeparatedName;
+        panel.transform.FindChild("Image").FindChild("TierText").GetComponent<Text>().text = "  C";
+        panel.transform.FindChild("Image").FindChild("TierText").GetComponent<Text>().color = Color.red;
+        int textCounter = 0;
+        panel.transform.FindChild("Image").FindChild("DamageText").GetComponent<Text>().text = "";
+        panel.transform.FindChild("Image").FindChild("RangeText").GetComponent<Text>().text = "";
+        panel.transform.FindChild("Image").FindChild("StatText1").GetComponent<Text>().text = "";
+
+        if(cons.HealthPoints != 0)
+        {
+            printTextOnPanel(panel, textCounter, "HP: +" + cons.HealthPoints);
+            textCounter++;
+        }
+        if (cons.MagicPoints != 0)
+        {
+            printTextOnPanel(panel, textCounter, "MP: +" + cons.MagicPoints);
+            textCounter++;
+        }
+        if (cons.Defense != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Defense: +" + cons.Defense);
+            textCounter++;
+        }
+        if (cons.Dexterity != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Dexterity: +" + cons.Dexterity);
+            textCounter++;
+        }
+        if (cons.Vitality != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Vitality: +" + cons.Vitality);
+            textCounter++;
+        }
+        if (cons.Speed != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Speed: +" + cons.Speed);
+            textCounter++;
+        }
+        if (cons.Attack != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Attack: +" + cons.Attack);
+            textCounter++;
+        }
+        if (cons.Wisdom != 0)
+        {
+            printTextOnPanel(panel, textCounter, "Wisdom: +" + cons.Wisdom);
+            textCounter++;
+        }
+    }
+
     void printTextOnPanel(GameObject panel, int textCounter, string displayText)
     {
         string panelName = "";
@@ -165,10 +219,27 @@ public class WeaponDataBase : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && !CameraRotationScript.isThereRotation)
         {
-            if ((hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ring" || hit.collider.tag == "Ability") && !isThereCursorOnImage && !EquippingScript.isThereGrabbedItem)
+            if ((hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ring" || hit.collider.tag == "Ability" || hit.collider.tag == "Consumable") && !isThereCursorOnImage && !EquippingScript.isThereGrabbedItem)
             {
+                Vector3 panelPosVec = hit.collider.transform.position + prevRotVec + Vector3.back;
+                if (Input.mousePosition.x > Screen.width/2)
+                {
+                    if (Input.mousePosition.y > Screen.height / 2)
+                        panelPosVec = hit.collider.transform.position + prevRotVec + Vector3.back;
+                    else
+                        panelPosVec = hit.collider.transform.position + prevRotVec + Vector3.back + Quaternion.Euler(0, 0, character.eulerAngles.z) * new Vector3(0, 2, 0);
+                }     
+                else
+                {
+                    if (Input.mousePosition.y > Screen.height / 2)
+                        panelPosVec = hit.collider.transform.position + prevRotVec + Vector3.back;
+                    else
+                        panelPosVec = hit.collider.transform.position + prevRotVec + Vector3.back + Quaternion.Euler(0, 0, character.eulerAngles.z) * new Vector3(6, 2, 0);
+                }
+                    
+
                 GameObject panel = Instantiate(Resources.Load("Objects/InfoPanel", typeof(GameObject)) as GameObject,
-                                      hit.collider.transform.position + prevRotVec + Vector3.back
+                                      panelPosVec
                                       , Quaternion.Euler(0, 0, character.eulerAngles.z));
 
                 panel.transform.SetParent(panelCanvas.transform);
@@ -189,6 +260,10 @@ public class WeaponDataBase : MonoBehaviour
                 else if(hit.collider.tag == "Ability")
                 {
                     PopPanelWithName(AbilityDataBase.FindAbilityThroughName(hit.collider.name), panel);
+                }
+                else if (hit.collider.tag == "Consumable")
+                {
+                    PopPanelWithName(ConsumableDataBase.FindConsumableByName(hit.collider.name), panel);
                 }
 
                 panelBuffer = panel;

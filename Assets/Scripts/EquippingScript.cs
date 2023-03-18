@@ -5,20 +5,20 @@ using UnityEngine.EventSystems;
 
 public class EquippingScript : MonoBehaviour
 {
-    public static Slot[] slotList = { new Slot("EquipmentSlot1", new Vector3(6.907f, 1.124f, -6.13f), "Weapon", true, "ColossusDaggerImage"),
-                                      new Slot("EquipmentSlot2", new Vector3(8.366f, 1.124f, -6.13f), "Armor", true, "AzzureChestplateImage"),
-                                      new Slot("EquipmentSlot3", new Vector3(6.907f, -0.156f, -6.13f), "Ability", true, "CloakOfTheTormentedSoulsImage"),
-                                      new Slot("EquipmentSlot4", new Vector3(8.366f, -0.156f, -6.13f), "Ring", true, "RingOfTheCrimsonWardenImage"),
-                                      new Slot("Slot1", new Vector3(6.907f, -1.558f, -6.13f), "", false, ""),
-                                      new Slot("Slot2", new Vector3(8.366f, -1.558f, -6.13f), "", false, ""),
-                                      new Slot("Slot3", new Vector3(6.907f, -2.917f, -6.13f), "", false, ""),
-                                      new Slot("Slot4", new Vector3(8.366f, -2.917f, -6.13f), "", false, ""),
-                                      new Slot("Slot5", new Vector3(6.907f, -4.31f, -6.13f), "", false, ""),
-                                      new Slot("Slot6", new Vector3(8.366f, -4.31f, -6.13f), "", false, "")};
+    public static Slot[] slotList = { new Slot("EquipmentSlot1", new Vector3(6.907f, 1.124f, -6.13f), "Weapon", true, "ColossusDaggerImage", "Weapon"),
+                                      new Slot("EquipmentSlot2", new Vector3(8.366f, 1.124f, -6.13f), "Armor", true, "AzzureChestplateImage", "Armor"),
+                                      new Slot("EquipmentSlot3", new Vector3(6.907f, -0.156f, -6.13f), "Ability", true, "CloakOfTheTormentedSoulsImage", "Ability"),
+                                      new Slot("EquipmentSlot4", new Vector3(8.366f, -0.156f, -6.13f), "Ring", true, "RingOfTheCrimsonWardenImage", "Ring"),
+                                      new Slot("Slot1", new Vector3(6.907f, -1.558f, -6.13f), "", false, "", ""),
+                                      new Slot("Slot2", new Vector3(8.366f, -1.558f, -6.13f), "", false, "", ""),
+                                      new Slot("Slot3", new Vector3(6.907f, -2.917f, -6.13f), "", false, "", ""),
+                                      new Slot("Slot4", new Vector3(8.366f, -2.917f, -6.13f), "", false, "", ""),
+                                      new Slot("Slot5", new Vector3(6.907f, -4.31f, -6.13f), "", false, "", ""),
+                                      new Slot("Slot6", new Vector3(8.366f, -4.31f, -6.13f), "", false, "", "")};
 
     public static bool isThereGrabbedItem = false;
     public static GameObject grabbedItem = null;
-
+    public static GameObject lastSlot = null;
     public static Slot FindSlotThroughName(string name)
     {
         for (int i = 0; i < 10; i++)
@@ -29,12 +29,23 @@ public class EquippingScript : MonoBehaviour
         return null;
     }
 
-    public static Slot FindSlotThroughItemName(string name)
+    public static Slot FindISlotThroughName(string name)
     {
         for (int i = 0; i < 10; i++)
         {
-            if (slotList[i].getItemName() == name)
+            if (slotList[i].getName() == name)
                 return slotList[i];
+        }
+        return null;
+    }
+
+    public static LootSlot FindLootSlotThroughName(string lootBagSlotName)
+    {
+        LootBag currBag = LootBagCheckScript.FindLootBagByName();
+        for (int i = 0; i < 8; i++)
+        {
+            if (currBag.LootSlots[i].Name == lootBagSlotName)
+                return currBag.LootSlots[i];
         }
         return null;
     }
@@ -58,23 +69,77 @@ public class EquippingScript : MonoBehaviour
         return true;
     }
 
-    void CheckForGrabbing()
+    bool IsCurrBagEmpty()
+    {
+        LootBag currBag = LootBagCheckScript.FindLootBagByName();
+        for (int i = 0; i < 8; i++)
+        {
+            if (!currBag.LootSlots[i].IsEmpty) return false; 
+        }
+        return true;
+    }
+
+    void CheckForGrabbingInLootSlots()
     {
         if (!isThereGrabbedItem)
         {
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && Input.GetMouseButtonDown(0))
             {
-                if(hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ability" || hit.collider.tag == "Ring")
-                {
+                if (hit.collider.transform.parent != null && hit.collider.transform.parent.name.Contains("Loot") &&
+                    (hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ability" || hit.collider.tag == "Ring" || hit.collider.tag == "Consumable"))
+                {        
                     grabbedItem = hit.collider.gameObject;
+                    GameObject itemParent = grabbedItem.transform.parent.gameObject;
                     grabbedItem.transform.parent = null;
                     grabbedItem.GetComponent<SpriteRenderer>().sortingLayerName = "OverUI";
                     Destroy(WeaponDataBase.panelBuffer);
-                    Slot selectedSlot = FindSlotThroughItemName(grabbedItem.name);
+                    LootSlot selectedSlot = FindLootSlotThroughName(itemParent.name);
+                    selectedSlot.IsEmpty = true;
+                    selectedSlot.ItemName = "";
+                    isThereGrabbedItem = true;
+
+                    if (IsCurrBagEmpty())
+                    {
+                        for (int i = 0; i < EnemyClassScript.worldItemsList.Count; i++)
+                        {
+                            if(LootBagCheckScript.currLootBag == EnemyClassScript.worldItemsList[i])
+                            {
+                                EnemyClassScript.worldItemsList.RemoveAt(i);
+                                EnemyClassScript.lootBags.RemoveAt(i);
+                                break;
+                            }
+                        }
+                        Destroy(GameObject.Find(LootBagCheckScript.currLootBag.name));
+                        LootBagCheckScript.DisableLootPanel();
+                    }
+
+                }
+            }
+        }
+    }
+
+    void CheckForGrabbing()
+    {
+        if (!isThereGrabbedItem)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && Input.GetMouseButtonDown(0))
+            {      
+                if (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "InventorySlot" &&
+                    (hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ability" || hit.collider.tag == "Ring" || hit.collider.tag == "Consumable"))
+                {
+                    grabbedItem = hit.collider.gameObject;
+                    GameObject itemParent = grabbedItem.transform.parent.gameObject;
+                    grabbedItem.transform.parent = null;
+                    grabbedItem.GetComponent<SpriteRenderer>().sortingLayerName = "OverUI";
+                    Destroy(WeaponDataBase.panelBuffer);
+                    Slot selectedSlot = FindISlotThroughName(itemParent.name);
+                    lastSlot = itemParent;
 
                     selectedSlot.setIsFull(false);
                     selectedSlot.setItemName("");
+                    selectedSlot.setItemTag("");
                     isThereGrabbedItem = true;
 
                     if (hit.collider.tag == "Weapon" && selectedSlot.getName() == "EquipmentSlot1")
@@ -142,10 +207,15 @@ public class EquippingScript : MonoBehaviour
                                     isThereGrabbedItem = true;
 
                                 }
-                                else isThereGrabbedItem = false;
+                                else
+                                {
+                                    lastSlot = null;
+                                    isThereGrabbedItem = false;
+                                }
 
                                 selectedSlot.setIsFull(true);
                                 selectedSlot.setItemName(prevGrabbedItem.name);
+                                selectedSlot.setItemTag(prevGrabbedItem.tag);
 
                                 if (selectedSlot.getName() == "EquipmentSlot1" && WeaponDataBase.FindWeaponThroughName(prevGrabbedItem.name) != null)
                                 {
@@ -187,6 +257,7 @@ public class EquippingScript : MonoBehaviour
     void Update()
     {
         CheckForGrabbing();
+        CheckForGrabbingInLootSlots();
         DragItemOnScreen();
     }
 }
@@ -198,6 +269,7 @@ public class Slot
     private string tag;
     private bool isFullV;
     private string itemName;
+    private string itemTag;
     public string getName() { return this.name; }
 
     public Vector3 getPos() { return this.position; }
@@ -210,16 +282,19 @@ public class Slot
 
     public string getItemName() { return this.itemName; }
 
+    public string getItemTag() { return this.itemTag; }
     public void setItemName(string itemName) { this.itemName = itemName; }
 
+    public void setItemTag(string itemTag) { this.itemTag = itemTag; }
     public void setPos(Vector3 pos) { this.position = pos; }
 
-    public Slot(string name, Vector3 position, string tag, bool isFull, string itemName)
+    public Slot(string name, Vector3 position, string tag, bool isFull, string itemName, string itemTag)
     {
         this.name = name;
         this.position = position;
         this.tag = tag;
         this.isFullV = isFull;
         this.itemName = itemName;
+        this.itemTag = itemTag;
     }
 }

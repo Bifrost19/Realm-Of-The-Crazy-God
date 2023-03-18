@@ -134,12 +134,12 @@ public class TreeGenerationScript : MonoBehaviour
         if(allTreesInRangeForLayering.Count > 0)
         {
             mObject.GetComponent<SpriteRenderer>().sortingOrder = allTreesInRangeForLayering[allTreesInRangeForLayering.Count - 1].GetComponent<SpriteRenderer>().sortingOrder - 1;
-            mObject.transform.GetChild(0).GetComponent<Canvas>().sortingOrder = allTreesInRangeForLayering[allTreesInRangeForLayering.Count - 1].GetComponent<SpriteRenderer>().sortingOrder - 1;
+            if (mObject.transform.childCount > 0) mObject.transform.GetChild(0).GetComponent<Canvas>().sortingOrder = allTreesInRangeForLayering[allTreesInRangeForLayering.Count - 1].GetComponent<SpriteRenderer>().sortingOrder - 1;
         }
         else
         {
             mObject.GetComponent<SpriteRenderer>().sortingOrder = 0;
-            mObject.transform.GetChild(0).GetComponent<Canvas>().sortingOrder = 0;
+            if(mObject.transform.childCount > 0) mObject.transform.GetChild(0).GetComponent<Canvas>().sortingOrder = 0;
         }
         
     }

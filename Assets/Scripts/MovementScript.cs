@@ -6,6 +6,7 @@ public class MovementScript : MonoBehaviour
 {
     public Transform character;
     public static float piRelation = 57.32484f;
+    public static bool isThereMovement = true;
     void Update()
     {
         if(Input.GetKey("w"))
@@ -13,29 +14,36 @@ public class MovementScript : MonoBehaviour
             Vector3 moveVec = findVec('w');
             character.position += moveVec * Time.deltaTime * Player.getSpeed() / 4;
             FixSlotPosVectors(moveVec);
+            FixLootBagPosVectors(moveVec);
             TreeGenerationScript.LayerTrees();
-
+            isThereMovement = true;
         }
         if (Input.GetKey("s"))
         {
             Vector3 moveVec = findVec('s');
             character.position += moveVec * Time.deltaTime * Player.getSpeed() / 4;
             FixSlotPosVectors(moveVec);
+            FixLootBagPosVectors(moveVec);
             TreeGenerationScript.LayerTrees();
+            isThereMovement = true;
         }
         if (Input.GetKey("a"))
         {
             Vector3 moveVec = findVec('a');
             character.position += moveVec * Time.deltaTime * Player.getSpeed() / 4;
             FixSlotPosVectors(moveVec);
+            FixLootBagPosVectors(moveVec);
             TreeGenerationScript.LayerTrees();
+            isThereMovement = true;
         }
         if (Input.GetKey("d"))
         {
             Vector3 moveVec = findVec('d');
             character.position += moveVec * Time.deltaTime * Player.getSpeed() / 4;
             FixSlotPosVectors(moveVec);
+            FixLootBagPosVectors(moveVec);
             TreeGenerationScript.LayerTrees();
+            isThereMovement = true;
         }
     }
 
@@ -44,6 +52,14 @@ public class MovementScript : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             EquippingScript.slotList[i].setPos(EquippingScript.slotList[i].getPos() + offsetVec * Time.deltaTime * Player.getSpeed() / 4);
+        }
+    }
+
+    void FixLootBagPosVectors(Vector3 offsetVec)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            LootBagCheckScript.lootBagPosVectors[i] += offsetVec * Time.deltaTime * Player.getSpeed() / 4;
         }
     }
 

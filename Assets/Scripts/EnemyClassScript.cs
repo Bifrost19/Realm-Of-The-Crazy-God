@@ -21,6 +21,10 @@ public class EnemyClassScript : MonoBehaviour
     //Drop rates
     public static int brownBagDropRate = 50;
     public static List<GameObject> worldItemsList = new List<GameObject>();
+    public static List<LootBag> lootBags = new List<LootBag>();
+
+    public static int bagIndex = 1;
+    public static int nameCounter = 1;
 
     public GameObject findParticleThroughEnemyName(string name)
     {
@@ -100,7 +104,19 @@ public class EnemyClassScript : MonoBehaviour
             GameObject brownBag = Instantiate(Resources.Load("Objects/BrownBag", typeof(GameObject)) as GameObject,
                                               dropSpawnVec, Quaternion.Euler(0, 0, character.eulerAngles.z));
 
+            brownBag.name = "BrownBag" + bagIndex.ToString();
+            bagIndex++;
+
             worldItemsList.Add(brownBag);
+            List<LootSlot> lootSlots = new List<LootSlot>{ new LootSlot("LootBagSlot1", "HealthPotion" + (nameCounter++).ToString(), false),
+                                         new LootSlot("LootBagSlot2", "", true),
+                                         new LootSlot("LootBagSlot3", "", true),
+                                         new LootSlot("LootBagSlot4", "", true),
+                                         new LootSlot("LootBagSlot5", "", true),
+                                         new LootSlot("LootBagSlot6", "", true),
+                                         new LootSlot("LootBagSlot7", "", true),
+                                         new LootSlot("LootBagSlot8", "", true)};
+            lootBags.Add(new LootBag(brownBag.name, lootSlots));
         }
     }
 
@@ -194,4 +210,56 @@ public class Enemy
         EnemyClassScript.SpawnDrop(enemy);
         GameObject.Destroy(this.enemy);
     }
+}
+
+public class LootBag
+{
+    private string name;
+    private List<LootSlot> lootSlots = new List<LootSlot>(8);
+    public string Name
+    {
+        get { return name; }
+        set { name = value; }
+    }
+    public List<LootSlot> LootSlots
+    { 
+        get { return lootSlots; }
+        set { lootSlots = value; }
+    }
+
+    public LootBag(string name, List<LootSlot> lootSlots)
+    {
+        Name = name;
+        LootSlots = lootSlots;
+    }
+}
+
+public class LootSlot
+{
+    private string name;
+    private string itemName;
+    private bool isEmpty;
+
+    public string Name
+    {
+        get { return name; }
+        set { name = value; }
+    }
+    public string ItemName
+    {
+        get { return itemName; }
+        set { itemName = value; }
+    }
+    public bool IsEmpty
+    {
+        get { return isEmpty; }
+        set { isEmpty = value; }
+    }
+    public LootSlot(string name, string itemName, bool isEmpty)
+    {
+        Name = name;
+        ItemName = itemName;
+        IsEmpty = isEmpty;
+    }
+
 }

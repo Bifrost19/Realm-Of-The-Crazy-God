@@ -13,6 +13,7 @@ TagManager:
   - Ability
   - WorldObject
   - WorldItem
+  - Consumable
   layers:
   - Default
   - TransparentFX

@@ -15,6 +15,8 @@ public class CameraRotationScript : MonoBehaviour
     public static GameObject[] worldEntities;
     public static List<GameObject> worldEntitiesList = new List<GameObject>();
 
+    public GameObject mainCanvas;
+
     private void Start()
     {
         //Get all entity gameobjects and save them in array
@@ -122,6 +124,13 @@ public class CameraRotationScript : MonoBehaviour
             Vector3 offsetVec = Quaternion.Euler(0, 0, character.eulerAngles.z) * new Vector3(0.1f, -0.15f, 0);
             EquippingScript.slotList[i].setPos(new Vector3(slotVec.x, slotVec.y, -6.13f) + offsetVec);
         }
+        for (int i = 0; i < 8; i++)
+        {
+            Vector3 slotVec = mainCanvas.transform.Find("LootPanel").GetChild(i).position;
+            Vector3 offsetVec = Quaternion.Euler(0, 0, character.eulerAngles.z) * new Vector3(0.05f, -0.2f, 0f);
+            LootBagCheckScript.lootBagPosVectors[i] = new Vector3(slotVec.x, slotVec.y, -6.2f) + offsetVec;
+        }
+       
     }
 
     Vector3 getStrVec()
