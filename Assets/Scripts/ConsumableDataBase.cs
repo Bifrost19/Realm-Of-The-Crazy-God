@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 
 public class ConsumableDataBase : MonoBehaviour
 {
-    public static List<Consumable> allConsumables = new List<Consumable>() { new Consumable("HealthPotion", "Health Potion", 100, 0, 0, 0, 0, 0, 0, 0) };
+    public static List<Consumable> allConsumables = new List<Consumable>() { new Consumable("HealthPotion", "Health Potion", 100, 0, 0, 0, 0, 0, 0, 0),
+                                                                             new Consumable("MagicPotion", "Magic Potion", 0, 100, 0, 0, 0, 0, 0, 0)};
     public static Consumable FindConsumableByName(string name)
     {
         for (int i = 0; i < allConsumables.Count; i++)

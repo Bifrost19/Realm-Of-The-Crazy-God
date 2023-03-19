@@ -109,7 +109,7 @@ public class EnemyClassScript : MonoBehaviour
 
             worldItemsList.Add(brownBag);
             List<LootSlot> lootSlots = new List<LootSlot>{ new LootSlot("LootBagSlot1", "HealthPotion" + (nameCounter++).ToString(), false),
-                                         new LootSlot("LootBagSlot2", "", true),
+                                         new LootSlot("LootBagSlot2", "MagicPotion" + (nameCounter++).ToString(), false),
                                          new LootSlot("LootBagSlot3", "", true),
                                          new LootSlot("LootBagSlot4", "", true),
                                          new LootSlot("LootBagSlot5", "", true),

@@ -7,6 +7,7 @@ public class PlayerClassScript : MonoBehaviour
 {
 
     public GameObject healthBar;
+    public GameObject statPanel;
     public static int healingCounter = 0;
     public static int magicPointsHealingCounter = 0;
 
@@ -36,11 +37,52 @@ public class PlayerClassScript : MonoBehaviour
         magicPointsHealingCounter++;
     }
 
+    public void DisplayStats()
+    {
+        int statPanelChildCount = statPanel.transform.childCount;
+        for (int i = 1; i < statPanelChildCount; i++)
+        {
+            string currStatText = "";
+            switch(i)
+            {
+                case 1:
+                    currStatText = "ATK: " + Player.getAttack();
+                    break;
+
+                case 2:
+                    currStatText = "DEF: " + Player.getDefense();
+                    break;
+
+                case 3:
+                    currStatText = "SPD: " + Player.getSpeed();
+                    break;
+
+                case 4:
+                    currStatText = "DEX: " + Player.getDexterity();
+                    break;
+
+                case 5:
+                    currStatText = "VIT: " + Player.getVitality();
+                    break;
+
+                case 6:
+                    currStatText = "WIS: " + Player.getWisdom();
+                    break;
+            }
+            statPanel.transform.GetChild(i).GetComponent<Text>().text = currStatText;
+        }
+    }
+
     void Update()
     {
         //Passive HP & MP healing
         healPlayer();
         healMagicPoints();
+    }
+
+    private void FixedUpdate()
+    {
+        DisplayStats();
     }
 }
 
