@@ -9,6 +9,7 @@ public class TerrainGeneratingScript : MonoBehaviour
     public static int tileScale = 5;
     public static GeneratedTile currClosestGeneratedTile;
     public static GeneratedTile prevClosestGeneratedTile;
+    public static int treeDensity = 2;
 
     public static bool IsFirstTime = true;
 
@@ -59,6 +60,18 @@ public class TerrainGeneratingScript : MonoBehaviour
         }
     }
 
+    bool IsThereTreeOnTile(float xStart, float xEnd, float yStart, float yEnd)
+    {
+        for (int i = 0; i < TreeGenerationScript.allWorldOBjectsList.Count; i++)
+        {
+            GameObject curr = TreeGenerationScript.allWorldOBjectsList[i];
+            if (curr.transform.position.x >= xStart && curr.transform.position.x <= xEnd &&
+                curr.transform.position.y >= yStart && curr.transform.position.y <= yEnd)
+                return true;
+        }
+        return false;
+    }
+
     void GenerateTiles(GeneratedTile currentTile)
     {
 
@@ -71,8 +84,25 @@ public class TerrainGeneratingScript : MonoBehaviour
                     GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/GrassTerrainGO", typeof(GameObject)) as GameObject,
                                       new Vector3(j, i, -4f), Quaternion.identity);
                     allGeneratedTiles.Add(new GeneratedTile(j, i, "Grass", tile));
-                }
 
+                    if (!IsThereTreeOnTile(j - tileScale / 2, j + tileScale / 2, i - tileScale / 2, i + tileScale / 2))
+                    {
+                        int treeCountOnTile = Random.RandomRange(1, treeDensity);
+                        // Trees are generated inappropriate
+                        for (int k = 0; k < treeCountOnTile; k++)
+                        {
+                            float xCoord = Random.RandomRange(j - tileScale / 2, j + tileScale / 2);
+                            float yCoord = Random.RandomRange(i - tileScale / 2, i + tileScale / 2);
+
+                            GameObject currTree = Instantiate(Resources.Load("Objects/FruitTree", typeof(GameObject)) as GameObject,
+                                                              new Vector3(xCoord, yCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+
+                            TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                        }
+                    }
+
+                }
+                
             }
         }
 
