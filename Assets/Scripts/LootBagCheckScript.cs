@@ -7,7 +7,8 @@ public class LootBagCheckScript : MonoBehaviour
     //this.gameObject = player
     public static GameObject lootPanel;
     public static GameObject currLootBag = null;
-    public static bool isBagFirstTime = false;
+    public static bool isBagFirstTime = true;
+
 
     public static List<Vector3> lootBagPosVectors = new List<Vector3> { new Vector3(-7.96f, -3.07f, -6.2f),
                                                                         new Vector3(-6.6f, -3.07f, -6.2f),
@@ -17,6 +18,7 @@ public class LootBagCheckScript : MonoBehaviour
                                                                         new Vector3(-6.63f, -4.13f, -6.2f),
                                                                         new Vector3(-5.23f, -4.13f, -6.2f),
                                                                         new Vector3(-3.91f, -4.13f, -6.2f)};
+
 
     public static void DisableLootPanel()
     {
@@ -29,7 +31,6 @@ public class LootBagCheckScript : MonoBehaviour
             }
         }
         lootPanel.SetActive(false);
-        currLootBag = null;
         isBagFirstTime = false;
     }
 
@@ -42,7 +43,7 @@ public class LootBagCheckScript : MonoBehaviour
         }
         return null;
     }
-    void EnableLootPanel()
+    static void EnableLootPanel()
     {
         LootBag currBag = FindLootBagByName();
         for (int i = 0; i < 8; i++)
@@ -98,11 +99,12 @@ public class LootBagCheckScript : MonoBehaviour
         isBagFirstTime = true;
     }
 
-    void CheckIfPlayerIsNearBag()
+    public static void CheckIfPlayerIsNearBag()
     {
-        Vector3 playerPos = gameObject.transform.position;
+        Vector3 playerPos = EnemyClassScript.character.transform.position;
         int bagIndex = 0;
         bool isThereBag = false;
+        DisableLootPanel();
 
         for (int i = 0; i < EnemyClassScript.worldItemsList.Count; i++)
         {
@@ -110,12 +112,26 @@ public class LootBagCheckScript : MonoBehaviour
             if (Mathf.Abs(curr.transform.position.x - playerPos.x) < 1 &&
                 Mathf.Abs(curr.transform.position.y - playerPos.y) < 1)
             {
+                currLootBag = curr;
                 bagIndex = i;
                 isThereBag = true;
-                currLootBag = curr;
                 break;
             }
         }
+
+        for (int i = bagIndex + 1; i < EnemyClassScript.worldItemsList.Count; i++)
+        {
+            GameObject curr = EnemyClassScript.worldItemsList[i];
+            if (Mathf.Abs(curr.transform.position.x - playerPos.x) < 1 &&
+                Mathf.Abs(curr.transform.position.y - playerPos.y) < 1 &&
+                (playerPos - currLootBag.transform.position).magnitude >=
+                (playerPos - curr.transform.position).magnitude)
+            {
+                isThereBag = true;
+                currLootBag = curr;
+            }
+        }
+        
         if (isThereBag && !isBagFirstTime && !CameraRotationScript.isThereRotation)
         {
             EnableLootPanel();
@@ -123,7 +139,9 @@ public class LootBagCheckScript : MonoBehaviour
         else if (!isThereBag && isBagFirstTime)
         {
             DisableLootPanel();
+            currLootBag = null;
         }
+
     }
 
     public void Awake()
@@ -133,6 +151,6 @@ public class LootBagCheckScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (MovementScript.isThereMovement) CheckIfPlayerIsNearBag();
+        CheckIfPlayerIsNearBag();
     }
 }

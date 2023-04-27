@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7751390450033290555}
   - component: {fileID: 4943052443301555045}
   m_Layer: 0
-  m_Name: HealthPotionImage
+  m_Name: HealthPotion
   m_TagString: Consumable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 3313490077730629252}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.2414813, y: -2.7706447, z: -6.3808484}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.28, y: 1.35, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0

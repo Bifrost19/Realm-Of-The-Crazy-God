@@ -7,6 +7,9 @@ public class ConsumableDataBase : MonoBehaviour
 {
     public static List<Consumable> allConsumables = new List<Consumable>() { new Consumable("HealthPotion", "Health Potion", 100, 0, 0, 0, 0, 0, 0, 0),
                                                                              new Consumable("MagicPotion", "Magic Potion", 0, 100, 0, 0, 0, 0, 0, 0)};
+
+
+    public static int slotNumber = 0;
     public static Consumable FindConsumableByName(string name)
     {
         for (int i = 0; i < allConsumables.Count; i++)
@@ -28,16 +31,25 @@ public class ConsumableDataBase : MonoBehaviour
         Player.setWisdom(cons.Wisdom);
     }
 
-    void CheckForConsume()
+    public static int GetHitSlotNumber(string itemName)
     {
-        int slotNumber = 0;
+        for (int i = 4; i < 10; i++)
+        {
+            if (EquippingScript.slotList[i].getItemName() == itemName)
+                return i;
+        }
+        return 0;
+    }
+
+    public static void CheckForConsume()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1)) slotNumber = 1;
         if (Input.GetKeyDown(KeyCode.Alpha2)) slotNumber = 2;
         if (Input.GetKeyDown(KeyCode.Alpha3)) slotNumber = 3;
         if (Input.GetKeyDown(KeyCode.Alpha4)) slotNumber = 4;
         if (Input.GetKeyDown(KeyCode.Alpha5)) slotNumber = 5;
         if (Input.GetKeyDown(KeyCode.Alpha6)) slotNumber = 6;
-     
+
         if (slotNumber != 0 && EquippingScript.slotList[slotNumber + 3].isFull() &&
             EquippingScript.slotList[slotNumber + 3].getItemTag() == "Consumable")
         {
@@ -48,6 +60,7 @@ public class ConsumableDataBase : MonoBehaviour
             currSlot.setItemName("");
             currSlot.setItemTag("");
         }
+        slotNumber = 0;
     }
 
     public static string CutNumbersFromItemName(string itemName)
@@ -95,6 +108,8 @@ public class ConsumableDataBase : MonoBehaviour
                 Destroy(EquippingScript.grabbedItem);
                 EquippingScript.grabbedItem = null;
                 EquippingScript.isThereGrabbedItem = false;
+                LootBagCheckScript.DisableLootPanel();
+                LootBagCheckScript.currLootBag = null;
             }
         }
     }

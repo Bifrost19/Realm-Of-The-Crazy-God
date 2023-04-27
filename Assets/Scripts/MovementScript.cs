@@ -45,6 +45,7 @@ public class MovementScript : MonoBehaviour
             TreeGenerationScript.LayerTrees();
             isThereMovement = true;
         }
+        //else isThereMovement = false;
     }
 
     void FixSlotPosVectors(Vector3 offsetVec)

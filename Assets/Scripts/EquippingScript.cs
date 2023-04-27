@@ -19,6 +19,8 @@ public class EquippingScript : MonoBehaviour
     public static bool isThereGrabbedItem = false;
     public static GameObject grabbedItem = null;
     public static GameObject lastSlot = null;
+    public static bool isThereConsumedItem = false;
+
     public static Slot FindSlotThroughName(string name)
     {
         for (int i = 0; i < 10; i++)
@@ -79,6 +81,19 @@ public class EquippingScript : MonoBehaviour
         return true;
     }
 
+    void CheckForConsumeWithShift()
+    {
+        RaycastHit hit;
+
+        if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && Input.GetMouseButtonDown(0) &&
+            hit.collider.tag == "Consumable" && Input.GetKey(KeyCode.LeftShift))
+        {
+            ConsumableDataBase.slotNumber = ConsumableDataBase.GetHitSlotNumber(hit.collider.name) - 3;
+            ConsumableDataBase.CheckForConsume();
+            isThereConsumedItem = true;
+        }
+    }
+
     void CheckForGrabbingInLootSlots()
     {
         if (!isThereGrabbedItem)
@@ -88,7 +103,8 @@ public class EquippingScript : MonoBehaviour
             {
                 if (hit.collider.transform.parent != null && hit.collider.transform.parent.name.Contains("Loot") &&
                     (hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ability" || hit.collider.tag == "Ring" || hit.collider.tag == "Consumable"))
-                {        
+                {    
+                    
                     grabbedItem = hit.collider.gameObject;
                     GameObject itemParent = grabbedItem.transform.parent.gameObject;
                     grabbedItem.transform.parent = null;
@@ -110,6 +126,7 @@ public class EquippingScript : MonoBehaviour
                                 break;
                             }
                         }
+
                         Destroy(GameObject.Find(LootBagCheckScript.currLootBag.name));
                         LootBagCheckScript.DisableLootPanel();
                     }
@@ -256,7 +273,13 @@ public class EquippingScript : MonoBehaviour
 
     void Update()
     {
-        CheckForGrabbing();
+        CheckForConsumeWithShift();
+        if(isThereConsumedItem)
+        {
+            Invoke("CheckForGrabbing", 0.1f);
+            isThereConsumedItem = false;
+        }
+        else CheckForGrabbing();
         CheckForGrabbingInLootSlots();
         DragItemOnScreen();
     }
