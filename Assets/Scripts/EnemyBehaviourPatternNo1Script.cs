@@ -36,7 +36,7 @@ public class EnemyBehaviourPatternNo1Script : MonoBehaviour
         Instantiate(currEnemy.getParticle(), new Vector3(this.gameObject.transform.position.x,
                                               this.gameObject.transform.position.y,
                                               -4.48f),
-                                              Quaternion.Euler(0, 0, this.gameObject.transform.eulerAngles.z + 90 + angle));
+                                              Quaternion.Euler(0, 0, this.gameObject.transform.eulerAngles.z + currEnemy.getParticleOrientation() + angle));
     }
 
     public void moveEnemy()

@@ -45,8 +45,10 @@ public class EnemyClassScript : MonoBehaviour
             Vector3 spawnVec = new Vector3(Random.Range(charPos.x - spawnRange, charPos.x + spawnRange),
                                            Random.Range(charPos.y - spawnRange, charPos.y + spawnRange),
                                            -4.48f);
-            GameObject enemy = Instantiate(enemyTypes[0], spawnVec, Quaternion.identity);
-            enemy.name = enemyTypes[0].name + instanceCounter.ToString();
+
+            int spawnRand = Random.RandomRange(0, 2);
+            GameObject enemy = Instantiate(enemyTypes[spawnRand], spawnVec, Quaternion.identity);
+            enemy.name = enemyTypes[spawnRand].name + instanceCounter.ToString();
             instanceCounter++;
         }
     }
@@ -68,7 +70,12 @@ public class EnemyClassScript : MonoBehaviour
             if (allNearbyEnemiesGOList[i].name.Contains("ViolentWanderer"))
             {
                 allNearbyEnemiesList.Add(new Enemy("ViolentWanderer", 1000, 1000, 12, 50, 25, 20, allNearbyEnemiesGOList[i],
-                                                   20, 30, findParticleThroughEnemyName("ViolentWanderer")));
+                                                   20, 30, findParticleThroughEnemyName("ViolentWanderer"), 90));
+            }
+            else if(allNearbyEnemiesGOList[i].name.Contains("AncientScavenger"))
+            {
+                allNearbyEnemiesList.Add(new Enemy("AncientScavenger", 700, 700, 15, 75, 35, 25, allNearbyEnemiesGOList[i],
+                                                   25, 45, findParticleThroughEnemyName("AncientScavenger"), 0));
             }
 
         }
@@ -147,6 +154,7 @@ public class Enemy
     public float shootingParticleSpeed;
     public float movementSpeed;
     public GameObject particle;
+    public float particleOrientation;
 
     public string getName() { return this.name; }
 
@@ -170,8 +178,11 @@ public class Enemy
 
     public GameObject getParticle() { return this.particle; }
 
+    public float getParticleOrientation() { return this.particleOrientation; }
+
     public Enemy(string name, float maxHealth, float health, float weaponRange, float damage, float dexterity, float defense,
-                 GameObject gameObjectEnemy, float shootingParticleSpeed, float movementSpeed, GameObject particle)
+                 GameObject gameObjectEnemy, float shootingParticleSpeed, float movementSpeed, GameObject particle,
+                 float particleOrientation)
     {
         this.name = name;
         this.maxHealth = maxHealth;
@@ -184,6 +195,7 @@ public class Enemy
         this.shootingParticleSpeed = shootingParticleSpeed;
         this.movementSpeed = movementSpeed;
         this.particle = particle;
+        this.particleOrientation = particleOrientation;
     }
 
     //Setters
