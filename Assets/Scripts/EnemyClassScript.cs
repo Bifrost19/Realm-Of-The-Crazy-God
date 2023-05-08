@@ -16,11 +16,13 @@ public class EnemyClassScript : MonoBehaviour
 
     //Spawn variables
     public GameObject[] enemyTypes;
-    public static float spawnRange = 50f;
-    public static int quantityPerSpawn = 10;
-    public static float spawnFrequency = 100000f;
+    public static float spawnRange = 20f; //50
+    public static int quantityPerSpawn = 3; //10
+    public static float spawnFrequency = 2000f;
     public static float spawnCounter = 0f;
     public static int instanceCounter = 0;
+
+    public static List<Tuple<int, int>> allPassedSpawnChunks = new List<Tuple<int, int>>();
 
     //Drop rates
     public static int brownBagDropRate = 50;
@@ -49,56 +51,106 @@ public class EnemyClassScript : MonoBehaviour
         return null;
     }
 
-    public void SpawnEntity()
+    private Tuple<int, int> FindCurrSpawnCoord()
     {
-        Vector3 charPos = this.gameObject.transform.position;
+        //Loop for X coordinate
+        int xCoord;
+        int currPosX = (int)(character.position.x);
 
-        for (int i = 0; i < quantityPerSpawn; i++)
+        int i = currPosX;
+        while (i % (2 * spawnRange) != 0)
+            i--;
+
+        int j = currPosX;
+        while (j % (2 * spawnRange) != 0)
+            j++;
+
+        if (Mathf.Abs(currPosX - i) >= Mathf.Abs(j - currPosX))
+            xCoord = j;
+        else xCoord = i;
+
+        //Loop for Y coordinate
+        int yCoord;
+        int currPosY = (int)(character.position.y);
+
+        i = currPosY;
+        while (i % (2 * spawnRange) != 0)
+            i--;
+
+        j = currPosY;
+        while (j % (2 * spawnRange) != 0)
+            j++;
+
+        if (Mathf.Abs(currPosY - i) >= Mathf.Abs(j - currPosY))
+            yCoord = j;
+        else yCoord = i;
+
+        return Tuple.Create(xCoord, yCoord);
+    }
+
+    public void CheckForNewSpawnChunks()
+    {
+        Tuple<int, int> currSpawnCoord = FindCurrSpawnCoord();
+        bool isSpawnChunkNew = true;
+
+        //print(currSpawnCoord);
+
+        for (int i = 0; i < allPassedSpawnChunks.Count; i++)
         {
-            Vector3 spawnVec = new Vector3(UnityEngine.Random.Range(charPos.x - spawnRange, charPos.x + spawnRange),
-                                           UnityEngine.Random.Range(charPos.y - spawnRange, charPos.y + spawnRange),
-                                           -4.48f);
+            if (allPassedSpawnChunks[i].Item1 == currSpawnCoord.Item1 &&
+                allPassedSpawnChunks[i].Item2 == currSpawnCoord.Item2)
+            {
+                isSpawnChunkNew = false;
+                break;
+            }
+        }
 
-            int spawnRand = UnityEngine.Random.RandomRange(0, 2);
-            GameObject enemy = Instantiate(enemyTypes[spawnRand], spawnVec, Quaternion.identity);
-            enemy.name = enemyTypes[spawnRand].name + instanceCounter.ToString();
-            instanceCounter++;
+        if (isSpawnChunkNew)
+        {
+            SpawnEntity(new Vector2(currSpawnCoord.Item1, currSpawnCoord.Item2));
+            allPassedSpawnChunks.Add(currSpawnCoord);
         }
     }
 
-    public void CollectEnemyEntitiesInList()
+    public void SpawnEntity(Vector2 spawnPos)
     {
-        GameObject[] allNearbyEnemies;
 
-        allNearbyEnemies = GameObject.FindGameObjectsWithTag("WorldEntity");
-
-        //Transform array to list for more convinient work
-        for (int i = 0; i < allNearbyEnemies.Length; i++)
+        for (int i = 0; i < quantityPerSpawn; i++)
         {
-            allNearbyEnemiesGOList.Add(allNearbyEnemies[i].gameObject);
+            Vector3 spawnVec = new Vector3(UnityEngine.Random.Range(spawnPos.x - spawnRange, spawnPos.x + spawnRange),
+                                           UnityEngine.Random.Range(spawnPos.y - spawnRange, spawnPos.y + spawnRange),
+                                           -4.48f);
+
+            int spawnRand = UnityEngine.Random.RandomRange(0, 2);
+            GameObject enemy = Instantiate(enemyTypes[spawnRand], spawnVec, Quaternion.Euler(0, 0, character.eulerAngles.z));
+            enemy.name = enemyTypes[spawnRand].name + instanceCounter.ToString();
+            instanceCounter++;
+            CollectEnemyInfoInLists(enemy);
         }
+    }
 
-        for (int i = 0; i < allNearbyEnemiesGOList.Count; i++)
+    public void CollectEnemyInfoInLists(GameObject enemy)
+    {
+        allNearbyEnemiesGOList.Add(enemy);
+        CameraRotationScript.worldEntitiesList.Add(enemy);
+
+        if (enemy.name.Contains("ViolentWanderer"))
         {
-            if (allNearbyEnemiesGOList[i].name.Contains("ViolentWanderer"))
-            {
-                allNearbyEnemiesList.Add(new Enemy("ViolentWanderer", 1000, 1000, 12, 50, 25, 20, allNearbyEnemiesGOList[i],
+            allNearbyEnemiesList.Add(new Enemy("ViolentWanderer", 1000, 1000, 12, 50, 25, 20, enemy,
                                                    20, 30, findParticleThroughEnemyName("ViolentWanderer"), 90));
-            }
-            else if(allNearbyEnemiesGOList[i].name.Contains("AncientScavenger"))
-            {
-                allNearbyEnemiesList.Add(new Enemy("AncientScavenger", 700, 700, 15, 75, 35, 25, allNearbyEnemiesGOList[i],
+        }
+        else if(enemy.name.Contains("AncientScavenger"))
+        {
+            allNearbyEnemiesList.Add(new Enemy("AncientScavenger", 700, 700, 15, 75, 35, 25, enemy,
                                                    25, 45, findParticleThroughEnemyName("AncientScavenger"), 0));
-            }
-
         }
     }
 
     public void Awake() //must be updated in future
     {
-        SpawnEntity();
-        CollectEnemyEntitiesInList();
         character = GameObject.Find("Player").transform;
+        allPassedSpawnChunks.Add(Tuple.Create(0, 0)); // Add start coordinate (0,0)
+        SpawnEntity(new Vector2(0, 0));
     }
 
     public void CheckForEnemyHealth()
@@ -157,13 +209,13 @@ public class EnemyClassScript : MonoBehaviour
     {
         CheckForEnemyHealth();
 
-        //Spawning---
-        //if(spawnCounter >= spawnFrequency)
-        //{
-        //    SpawnEntity();
-        //    spawnCounter = 0;
-        //}
-        //spawnCounter++;
+        //Spawning
+        if (spawnCounter >= spawnFrequency)
+        {
+            CheckForNewSpawnChunks();
+            spawnCounter = 0;
+        }
+        spawnCounter++;
     }
 }
 

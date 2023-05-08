@@ -24,7 +24,7 @@ public class EnemyParticleMovementScript : MonoBehaviour
     }
 
     private void OnCollisionEnter(Collision collision)
-    {
+    { 
         if(collision.collider.name == "Player")
         {
             Player.setHealth(-currEnemy.getDamage() + Player.getDefense());

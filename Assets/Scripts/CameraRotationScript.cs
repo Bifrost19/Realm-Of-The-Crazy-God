@@ -12,22 +12,9 @@ public class CameraRotationScript : MonoBehaviour
     public static bool isThereRotation = false;
     public static float deltaAngle = 0f;
 
-    public static GameObject[] worldEntities;
     public static List<GameObject> worldEntitiesList = new List<GameObject>();
 
     public GameObject mainCanvas;
-
-    private void Start()
-    {
-        //Get all entity gameobjects and save them in array
-        worldEntities = GameObject.FindGameObjectsWithTag("WorldEntity");
-
-        //Convert from array to list
-        for (int i = 0; i < worldEntities.Length; i++)
-        {
-            worldEntitiesList.Add(worldEntities[i]);
-        }
-    }
 
     void Update()
     {
