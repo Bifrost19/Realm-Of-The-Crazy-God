@@ -12,7 +12,7 @@ public class ArmorDataBase : MonoBehaviour
 
         for (int i = 0; i < armorList.Length; i++)
         {
-            if (armorList[i].armorImageName.Contains(name))
+            if (armorList[i].armorImageName.Contains(WeaponDataBase.CutNumsFromItemImageName(name)))
             {
                 return armorList[i];
             }

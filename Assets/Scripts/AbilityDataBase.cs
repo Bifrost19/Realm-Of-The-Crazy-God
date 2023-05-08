@@ -21,7 +21,7 @@ public class AbilityDataBase : MonoBehaviour
 
         for (int i = 0; i < allAbilitiesList.Length; i++)
         {
-            if (allAbilitiesList[i].getItemName().Contains(name))
+            if (allAbilitiesList[i].getItemName().Contains(WeaponDataBase.CutNumsFromItemImageName(name)))
             {
                 return allAbilitiesList[i];
             }

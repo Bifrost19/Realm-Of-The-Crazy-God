@@ -11,7 +11,7 @@ public class RingDataBase : MonoBehaviour
 
         for (int i = 0; i < ringList.Length; i++)
         {
-            if (ringList[i].ringImageName.Contains(name))
+            if (ringList[i].ringImageName.Contains(WeaponDataBase.CutNumsFromItemImageName(name)))
             {
                 return ringList[i];
             }

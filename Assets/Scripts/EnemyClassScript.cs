@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyClassScript : MonoBehaviour
 {
+    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 95) }),
+                                                                              new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 95)}) };
+
 
     public static List<GameObject> allNearbyEnemiesGOList = new List<GameObject>();
     public static List<Enemy> allNearbyEnemiesList = new List<Enemy>();
@@ -26,6 +30,15 @@ public class EnemyClassScript : MonoBehaviour
     public static int bagIndex = 1;
     public static int nameCounter = 1;
 
+    public static DropRate FindDropRateWithName(string name)
+    {
+        foreach(DropRate rate in allEnemiesDropRates)
+        {
+            if (rate.EnemyName == name) return rate;
+        }
+        return null;
+    }
+
     public GameObject findParticleThroughEnemyName(string name)
     {
         for (int i = 0; i < enemyParticles.Length; i++)
@@ -42,11 +55,11 @@ public class EnemyClassScript : MonoBehaviour
 
         for (int i = 0; i < quantityPerSpawn; i++)
         {
-            Vector3 spawnVec = new Vector3(Random.Range(charPos.x - spawnRange, charPos.x + spawnRange),
-                                           Random.Range(charPos.y - spawnRange, charPos.y + spawnRange),
+            Vector3 spawnVec = new Vector3(UnityEngine.Random.Range(charPos.x - spawnRange, charPos.x + spawnRange),
+                                           UnityEngine.Random.Range(charPos.y - spawnRange, charPos.y + spawnRange),
                                            -4.48f);
 
-            int spawnRand = Random.RandomRange(0, 2);
+            int spawnRand = UnityEngine.Random.RandomRange(0, 2);
             GameObject enemy = Instantiate(enemyTypes[spawnRand], spawnVec, Quaternion.identity);
             enemy.name = enemyTypes[spawnRand].name + instanceCounter.ToString();
             instanceCounter++;
@@ -102,11 +115,32 @@ public class EnemyClassScript : MonoBehaviour
         }
     }
 
-    public static void SpawnDrop(GameObject enemy)
+    public static void SpawnDrop(GameObject enemy, string enemyName)
     {
         Vector3 dropSpawnVec = enemy.transform.position;
-        int dropVar = Random.RandomRange(0, 100);
-        if (dropVar <= 100)
+
+        int fullCounter = 0;
+        DropRate currDropRate = FindDropRateWithName(enemyName);
+        List<LootSlot> lootSlots = new List<LootSlot>();
+
+        foreach (Tuple<string, int> item in currDropRate.Items)
+        {
+            int randDropNum = UnityEngine.Random.Range(0, 100);
+
+            if(randDropNum >= item.Item2)
+            {
+                lootSlots.Add(new LootSlot("LootBagSlot" + (fullCounter + 1).ToString(), item.Item1 + (nameCounter++).ToString(), false));
+                fullCounter++;
+            }
+        }
+
+        //Add the empty loot slots in the bags
+        for (int i = fullCounter; i < 8; i++)
+        {
+            lootSlots.Add(new LootSlot("LootBagSlot" + (i + 1).ToString(), "", true));
+        }
+
+        if(fullCounter > 0)
         {
             GameObject brownBag = Instantiate(Resources.Load("Objects/BrownBag", typeof(GameObject)) as GameObject,
                                               dropSpawnVec, Quaternion.Euler(0, 0, character.eulerAngles.z));
@@ -115,14 +149,6 @@ public class EnemyClassScript : MonoBehaviour
             bagIndex++;
 
             worldItemsList.Add(brownBag);
-            List<LootSlot> lootSlots = new List<LootSlot>{ new LootSlot("LootBagSlot1", "HealthPotion" + (nameCounter++).ToString(), false),
-                                         new LootSlot("LootBagSlot2", "MagicPotion" + (nameCounter++).ToString(), false),
-                                         new LootSlot("LootBagSlot3", "", true),
-                                         new LootSlot("LootBagSlot4", "", true),
-                                         new LootSlot("LootBagSlot5", "", true),
-                                         new LootSlot("LootBagSlot6", "", true),
-                                         new LootSlot("LootBagSlot7", "", true),
-                                         new LootSlot("LootBagSlot8", "", true)};
             lootBags.Add(new LootBag(brownBag.name, lootSlots));
         }
     }
@@ -138,6 +164,29 @@ public class EnemyClassScript : MonoBehaviour
         //    spawnCounter = 0;
         //}
         //spawnCounter++;
+    }
+}
+
+public class DropRate
+{
+    private string enemyName;
+    private List<Tuple<string, int>> items;
+
+    public string EnemyName
+    {
+        get { return enemyName; }
+        set { enemyName = value; }
+    }
+
+    public List<Tuple<string, int>> Items
+    { get { return items; }
+      set { items = value; }
+    }
+
+    public DropRate(string enemyName, List<Tuple<string, int>> items)
+    {
+        this.enemyName = enemyName;
+        this.items = items;
     }
 }
 
@@ -219,7 +268,7 @@ public class Enemy
     //Other methods
     public void destroyEnemy()
     {
-        EnemyClassScript.SpawnDrop(enemy);
+        EnemyClassScript.SpawnDrop(enemy, name);
         GameObject.Destroy(this.enemy);
     }
 }

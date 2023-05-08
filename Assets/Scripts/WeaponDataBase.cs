@@ -17,11 +17,25 @@ public class WeaponDataBase : MonoBehaviour
     public Transform character;
     public static Vector3 prevRotVec = new Vector3(-3.3f, -1f, 0);
 
+    public static string CutNumsFromItemImageName(string name)
+    {
+        int index = 0;
+        for (int i = 0; i < name.Length; i++)
+        {
+            if (name[i] >= '0' && name[i] <= '9')
+            {
+                index = i;
+                break;
+            }
+        }
+        return name.Substring(0, index);
+    }
+
     public static Weapon FindWeaponThroughName(string name)
     {
         for (int i = 0; i < weaponListCount; i++)
         {
-            if (weaponList[i].weaponImageName.Contains(name))
+            if (weaponList[i].weaponImageName.Contains(CutNumsFromItemImageName(name)))
                 return weaponList[i];
         }
         return null;
@@ -214,7 +228,7 @@ public class WeaponDataBase : MonoBehaviour
         panel.transform.FindChild("Image").FindChild(panelName).GetComponent<Text>().text = displayText;
     }
 
-    void CheckForMouseCursorOverWeaponImage()
+    void CheckForMouseCursorOverItemImage()
     {
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && !CameraRotationScript.isThereRotation)
@@ -280,7 +294,7 @@ public class WeaponDataBase : MonoBehaviour
 
     void Update()
     {
-        CheckForMouseCursorOverWeaponImage();
+        CheckForMouseCursorOverItemImage();
     }
 }
 
