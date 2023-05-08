@@ -50,7 +50,7 @@ public class ShootingScript : MonoBehaviour
 
         if (EventSystem.current.IsPointerOverGameObject()) isThereUIHit = true;
         
-        if (Input.GetMouseButton(0) && counter > (2000 / Player.getDexterity()) && isWeaponEquipped && !isThereUIHit)
+        if (Input.GetMouseButton(0) && counter > (3000 / Player.getDexterity()) && isWeaponEquipped && !isThereUIHit)
         {
             counter = 0;
             isRotating = true;

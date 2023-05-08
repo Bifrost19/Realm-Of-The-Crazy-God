@@ -237,6 +237,10 @@ public class EquippingScript : MonoBehaviour
                                 if (selectedSlot.getName() == "EquipmentSlot1" && WeaponDataBase.FindWeaponThroughName(prevGrabbedItem.name) != null)
                                 {
                                     Player.setDamage();
+
+                                    //Remove the buffs of the previous weapon
+                                    Weapon currGrabbedItem = WeaponDataBase.FindWeaponThroughName(grabbedItem.name);
+                                    Player.setDamage(-currGrabbedItem.getDamage());
                                 }
                                 else if (selectedSlot.getName() == "EquipmentSlot2" && ArmorDataBase.FindArmorThroughName(prevGrabbedItem.name) != null)
                                 {
@@ -244,6 +248,12 @@ public class EquippingScript : MonoBehaviour
                                     ///////////////////if() goes here
                                     Player.setMaxMagicPoints(ArmorDataBase.FindArmorThroughName(prevGrabbedItem.name).getMagicPoints());
                                     Player.setDefense(ArmorDataBase.FindArmorThroughName(prevGrabbedItem.name).getDefense());
+
+                                    //Remove the buffs of the previous armor
+                                    Armor currGrabbedItem = ArmorDataBase.FindArmorThroughName(grabbedItem.name);
+                                    Player.setMaxHealth(-currGrabbedItem.getHealthPoints());
+                                    Player.setMaxMagicPoints(-currGrabbedItem.getMagicPoints());
+                                    Player.setDefense(-currGrabbedItem.getDefense());
                                 }
                                 else if (selectedSlot.getName() == "EquipmentSlot4" && RingDataBase.FindRingThroughName(prevGrabbedItem.name) != null)
                                 {
@@ -255,6 +265,17 @@ public class EquippingScript : MonoBehaviour
                                     Player.setDexterity(RingDataBase.FindRingThroughName(prevGrabbedItem.name).getDexterity());
                                     Player.setVitality(RingDataBase.FindRingThroughName(prevGrabbedItem.name).getVitality());
                                     Player.setWisdom(RingDataBase.FindRingThroughName(prevGrabbedItem.name).getWisdom());
+
+                                    //Remove the buffs of the previous ring
+                                    Ring currGrabbedItem = RingDataBase.FindRingThroughName(grabbedItem.name);
+                                    Player.setMaxHealth(-currGrabbedItem.getHealthPoints());
+                                    Player.setMaxMagicPoints(-currGrabbedItem.getMagicPoints());
+                                    Player.setDefense(-currGrabbedItem.getDefense());
+                                    Player.setAttack(-currGrabbedItem.getAttack());
+                                    Player.setSpeed(-currGrabbedItem.getSpeed());
+                                    Player.setDexterity(-currGrabbedItem.getDexterity());
+                                    Player.setVitality(-currGrabbedItem.getVitality());
+                                    Player.setWisdom(-currGrabbedItem.getWisdom());
                                 }
                                 else if (selectedSlot.getName() == "EquipmentSlot3" && AbilityDataBase.FindAbilityThroughName(prevGrabbedItem.name) != null)
                                 {

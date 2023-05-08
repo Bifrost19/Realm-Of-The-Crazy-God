@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class RingDataBase : MonoBehaviour
 {
-    public static Ring[] ringList = { new Ring("RingOfTheCrimsonWardenImage", "Ring Of The Crimson Warden", 0, 100, 0, 0, 10, 0, 0, 8, 0) };
+    public static Ring[] ringList = { new Ring("RingOfTheCrimsonWardenImage", "Ring Of The Crimson Warden", 0, 100, 0, 0, 10, 0, 0, 8, 0),
+                                      new Ring("RingOfTheFallenVultureImage", "Ring Of The Fallen Vulture", 0, 150, 0, 0, 25, 0, 20, 0, 0) };
 
     public static Ring FindRingThroughName(string name)
     {
