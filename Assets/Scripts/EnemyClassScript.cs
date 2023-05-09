@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyClassScript : MonoBehaviour
 {
-    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 85), Tuple.Create("RingOfTheFallenVultureImage", 95) }),
-                                                                              new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 85)}) };
+    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 85), Tuple.Create("RingOfTheFallenVultureImage", 0) }), //95
+                                                                              new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 0)}), //85
+                                                                              new DropRate("ScarletWyvern", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("RingOfTheCrimsonWardenImage", 0)})}; //75
 
 
     public static List<GameObject> allNearbyEnemiesGOList = new List<GameObject>();
@@ -121,7 +123,7 @@ public class EnemyClassScript : MonoBehaviour
                                            UnityEngine.Random.Range(spawnPos.y - spawnRange, spawnPos.y + spawnRange),
                                            -4.48f);
 
-            int spawnRand = UnityEngine.Random.RandomRange(0, 2);
+            int spawnRand = UnityEngine.Random.RandomRange(0, 3);
             GameObject enemy = Instantiate(enemyTypes[spawnRand], spawnVec, Quaternion.Euler(0, 0, character.eulerAngles.z));
             enemy.name = enemyTypes[spawnRand].name + instanceCounter.ToString();
             instanceCounter++;
@@ -144,10 +146,21 @@ public class EnemyClassScript : MonoBehaviour
             allNearbyEnemiesList.Add(new Enemy("AncientScavenger", 700, 700, 15, 75, 35, 25, enemy,
                                                    25, 45, findParticleThroughEnemyName("AncientScavenger"), 0));
         }
+        else if(enemy.name.Contains("ScarletWyvern"))
+        {
+            allNearbyEnemiesList.Add(new Enemy("ScarletWyvern", 1500, 1500, 13, 120, 20, 30, enemy,
+                                                   18, 25, findParticleThroughEnemyName("ScarletWyvern"), 0));
+        }
     }
 
     public void Awake() //must be updated in future
     {
+        //Optional -> Add all enemies, which already exist in the scene
+        GameObject[] existingEnemies = GameObject.FindGameObjectsWithTag("WorldEntity");
+        for (int i = 0; i < existingEnemies.Length; i++)
+            CollectEnemyInfoInLists(existingEnemies[i]);
+        //----------------------
+
         character = GameObject.Find("Player").transform;
         allPassedSpawnChunks.Add(Tuple.Create(0, 0)); // Add start coordinate (0,0)
         SpawnEntity(new Vector2(0, 0));
