@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class EnemyClassScript : MonoBehaviour
 {
-    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 85), Tuple.Create("RingOfTheFallenVultureImage", 0) }), //95
-                                                                              new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 0)}), //85
-                                                                              new DropRate("ScarletWyvern", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("RingOfTheCrimsonWardenImage", 0)})}; //75
+    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 85), Tuple.Create("RingOfTheFallenVultureImage", 95) }), //95
+                                                                              new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 85)}), //85
+                                                                              new DropRate("ScarletWyvern", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("RingOfTheCrimsonWardenImage", 75)})}; //75
 
 
     public static List<GameObject> allNearbyEnemiesGOList = new List<GameObject>();
@@ -139,17 +139,17 @@ public class EnemyClassScript : MonoBehaviour
         if (enemy.name.Contains("ViolentWanderer"))
         {
             allNearbyEnemiesList.Add(new Enemy("ViolentWanderer", 1000, 1000, 12, 50, 25, 20, enemy,
-                                                   20, 30, findParticleThroughEnemyName("ViolentWanderer"), 90));
+                                                   20, 30, findParticleThroughEnemyName("ViolentWanderer"), 90, 1));
         }
         else if(enemy.name.Contains("AncientScavenger"))
         {
             allNearbyEnemiesList.Add(new Enemy("AncientScavenger", 700, 700, 15, 75, 35, 25, enemy,
-                                                   25, 45, findParticleThroughEnemyName("AncientScavenger"), 0));
+                                                   25, 45, findParticleThroughEnemyName("AncientScavenger"), 0, 1));
         }
         else if(enemy.name.Contains("ScarletWyvern"))
         {
             allNearbyEnemiesList.Add(new Enemy("ScarletWyvern", 1500, 1500, 13, 120, 20, 30, enemy,
-                                                   18, 25, findParticleThroughEnemyName("ScarletWyvern"), 0));
+                                                   12, 25, findParticleThroughEnemyName("ScarletWyvern"), 0, 2));
         }
     }
 
@@ -269,6 +269,7 @@ public class Enemy
     public float movementSpeed;
     public GameObject particle;
     public float particleOrientation;
+    public int shootingPattern;
 
     public string getName() { return this.name; }
 
@@ -294,9 +295,11 @@ public class Enemy
 
     public float getParticleOrientation() { return this.particleOrientation; }
 
+    public int getShootingPattern() { return this.shootingPattern; }
+
     public Enemy(string name, float maxHealth, float health, float weaponRange, float damage, float dexterity, float defense,
                  GameObject gameObjectEnemy, float shootingParticleSpeed, float movementSpeed, GameObject particle,
-                 float particleOrientation)
+                 float particleOrientation, int shootingPattern)
     {
         this.name = name;
         this.maxHealth = maxHealth;
@@ -310,6 +313,7 @@ public class Enemy
         this.movementSpeed = movementSpeed;
         this.particle = particle;
         this.particleOrientation = particleOrientation;
+        this.shootingPattern = shootingPattern;
     }
 
     //Setters

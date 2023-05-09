@@ -7,6 +7,7 @@ public class EnemyParticleMovementScript : MonoBehaviour
     public Vector3 characterPos;
     public Vector3 initialPos;
     public Enemy currEnemy = null;
+    public Vector3 dirMoveVec;
 
     void Start()
     {
@@ -34,7 +35,7 @@ public class EnemyParticleMovementScript : MonoBehaviour
 
     void Update()
     {
-        Vector3 mVector = new Vector3(characterPos.x - initialPos.x, characterPos.y - initialPos.y, 0);
+        Vector3 mVector = dirMoveVec;
         this.gameObject.transform.position += mVector.normalized * currEnemy.getShootingParticleSpeed() / 1000;
         TreeGenerationScript.LayerMovingParticle(gameObject, 1);
 

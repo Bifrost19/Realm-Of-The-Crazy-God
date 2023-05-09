@@ -9,6 +9,7 @@ public class ParticleMovementScript1 : MonoBehaviour
     public Vector3 characterPos;
     public Vector3 mouseVec;
 
+
     private void Start()
     {
         destRange = WeaponDataBase.FindWeaponThroughName(CutParticleFromName(gameObject.name)).getWeaponRange();
@@ -17,7 +18,7 @@ public class ParticleMovementScript1 : MonoBehaviour
                                 Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
     }
     void Update()
-    {
+    {      
         Vector3 mVector = new Vector3(mouseVec.x - characterPos.x, mouseVec.y - characterPos.y, 0);
         gameObject.transform.position += mVector.normalized * Time.deltaTime * speed;
         TreeGenerationScript.LayerMovingParticle(gameObject, 1);
@@ -53,4 +54,6 @@ public class ParticleMovementScript1 : MonoBehaviour
         //remove "Particle(Clone)"
         return name1.Remove(name.Length - 15, 15);
     }
+
+
 }
