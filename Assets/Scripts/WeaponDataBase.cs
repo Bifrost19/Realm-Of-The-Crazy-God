@@ -19,7 +19,7 @@ public class WeaponDataBase : MonoBehaviour
 
     public static string CutNumsFromItemImageName(string name)
     {
-        int index = 0;
+        int index = name.Length;
         for (int i = 0; i < name.Length; i++)
         {
             if (name[i] >= '0' && name[i] <= '9')

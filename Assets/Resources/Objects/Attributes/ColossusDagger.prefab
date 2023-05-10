@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7047520293981733757
+--- !u!1 &7169053633871710842
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6884691684122594326}
-  - component: {fileID: 2550995533660578646}
-  - component: {fileID: 1250778769361978495}
-  - component: {fileID: -5158875603383752100}
-  - component: {fileID: 8640864992768957750}
+  - component: {fileID: 7169053633871710837}
+  - component: {fileID: 7169053633871710836}
+  - component: {fileID: 7169053633871710839}
   m_Layer: 0
-  m_Name: ScarletWyvernParticle
+  m_Name: ColossusDagger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6884691684122594326
+--- !u!4 &7169053633871710837
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7047520293981733757}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.864}
+  m_GameObject: {fileID: 7169053633871710842}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.49100006, y: -0.06999999, z: -4.621}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2550995533660578646
+--- !u!212 &7169053633871710836
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7047520293981733757}
+  m_GameObject: {fileID: 7169053633871710842}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -74,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4bc72737025cd70439613f960ce58a83, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bbef4c731baae8146b22a7c6271c8dd4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,47 +83,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!54 &1250778769361978495
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7047520293981733757}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &-5158875603383752100
+--- !u!114 &7169053633871710839
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7047520293981733757}
+  m_GameObject: {fileID: 7169053633871710842}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a6b2ba67ead72c45a9ba15205b7aa0c, type: 3}
+  m_Script: {fileID: 11500000, guid: fd02d5249ee824242954d764d5fc8a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterPos: {x: 0, y: 0, z: 0}
-  initialPos: {x: 0, y: 0, z: 0}
-  dirMoveVec: {x: 0, y: 0, z: 0}
---- !u!65 &8640864992768957750
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7047520293981733757}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.41780037, y: 0.69788027, z: 0.20448932}
-  m_Center: {x: -0.056946754, y: 0.06368302, z: -0.0022446662}
+  rotAngle: 45

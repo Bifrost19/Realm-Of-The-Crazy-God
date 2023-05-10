@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterPos: {x: 0, y: 0, z: 0}
   initialPos: {x: 0, y: 0, z: 0}
+  dirMoveVec: {x: 0, y: 0, z: 0}
 --- !u!65 &-285071555592753708
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -110,8 +111,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.35061255, y: 0.82113266, z: 0.11217064}
-  m_Center: {x: 0.027111664, y: 0.033252, z: -0.005189279}
+  m_Size: {x: 0.31760484, y: 0.7995111, z: 0.11217064}
+  m_Center: {x: 0.030410714, y: 0.03349352, z: -0.005189277}
 --- !u!54 &-4039257982228679990
 Rigidbody:
   m_ObjectHideFlags: 0

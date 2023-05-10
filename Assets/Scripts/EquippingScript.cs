@@ -162,12 +162,14 @@ public class EquippingScript : MonoBehaviour
                     if (hit.collider.tag == "Weapon" && selectedSlot.getName() == "EquipmentSlot1")
                     {
                         Player.setDamage(-WeaponDataBase.FindWeaponThroughName(grabbedItem.name).getDamage());
+                        AttributeCheckingScript.RemoveWeaponAttribute();
                     }
                     else if (hit.collider.tag == "Armor" && selectedSlot.getName() == "EquipmentSlot2")
                     {
                         Player.setMaxHealth(-ArmorDataBase.FindArmorThroughName(grabbedItem.name).getHealthPoints());
                         Player.setMaxMagicPoints(-ArmorDataBase.FindArmorThroughName(grabbedItem.name).getMagicPoints());
                         Player.setDefense(-ArmorDataBase.FindArmorThroughName(grabbedItem.name).getDefense());
+                        AttributeCheckingScript.RemoveArmorAttribute();
                     }
                     else if (hit.collider.tag == "Ring" && selectedSlot.getName() == "EquipmentSlot4")
                     {
@@ -245,7 +247,11 @@ public class EquippingScript : MonoBehaviour
                                     {
                                         Weapon currGrabbedItem = WeaponDataBase.FindWeaponThroughName(grabbedItem.name);
                                         Player.setDamage(-currGrabbedItem.getDamage());
+
+                                        AttributeCheckingScript.RemoveWeaponAttribute();
+                                        AttributeCheckingScript.SpawnWeaponAttribute();
                                     }
+                                    else AttributeCheckingScript.SpawnWeaponAttribute();
                                 }
                                 else if (selectedSlot.getName() == "EquipmentSlot2" && ArmorDataBase.FindArmorThroughName(prevGrabbedItem.name) != null)
                                 {
@@ -261,7 +267,11 @@ public class EquippingScript : MonoBehaviour
                                         Player.setMaxHealth(-currGrabbedItem.getHealthPoints());
                                         Player.setMaxMagicPoints(-currGrabbedItem.getMagicPoints());
                                         Player.setDefense(-currGrabbedItem.getDefense());
+
+                                        AttributeCheckingScript.RemoveArmorAttribute();
+                                        AttributeCheckingScript.SpawnArmorAttribute();
                                     }
+                                    else AttributeCheckingScript.SpawnArmorAttribute();
                                 }
                                 else if (selectedSlot.getName() == "EquipmentSlot4" && RingDataBase.FindRingThroughName(prevGrabbedItem.name) != null)
                                 {
