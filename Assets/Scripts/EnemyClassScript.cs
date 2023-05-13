@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class EnemyClassScript : MonoBehaviour
 {
-    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 0), Tuple.Create("RingOfTheFallenVultureImage", 95) }), //95
+    public static List<DropRate> allEnemiesDropRates = new List<DropRate>() { new DropRate("ViolentWanderer", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("ColossusDaggerImage", 85), Tuple.Create("RingOfTheFallenVultureImage", 95) }), //95
                                                                               new DropRate("AncientScavenger", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("AzzureChestplateImage", 85)}), //85
                                                                               new DropRate("ScarletWyvern", new List<Tuple<string, int>> { Tuple.Create("HealthPotion", 50), Tuple.Create("MagicPotion", 50), Tuple.Create("RingOfTheCrimsonWardenImage", 75)})}; //75
 

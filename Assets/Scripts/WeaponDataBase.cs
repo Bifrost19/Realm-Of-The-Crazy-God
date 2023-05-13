@@ -231,7 +231,7 @@ public class WeaponDataBase : MonoBehaviour
     void CheckForMouseCursorOverItemImage()
     {
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && !CameraRotationScript.isThereRotation)
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 10f, LayerMask.NameToLayer("UI")) && !CameraRotationScript.isThereRotation)
         {
             if ((hit.collider.tag == "Weapon" || hit.collider.tag == "Armor" || hit.collider.tag == "Ring" || hit.collider.tag == "Ability" || hit.collider.tag == "Consumable") && !isThereCursorOnImage && !EquippingScript.isThereGrabbedItem)
             {

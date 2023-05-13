@@ -1,21 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class TerrainGeneratingScript : MonoBehaviour
 {
     public static List<GeneratedTile> allGeneratedTiles = new List<GeneratedTile>();
-    public static int generateRange = 3; //when 3 - The count of the tiles is between 36 and 48
-    public static int tileScale = 5;
+    public static int generateRange = 6; //when 3 - The count of the tiles is between 36 and 48
+    public static int tileScale = 2;
     public static GeneratedTile currClosestGeneratedTile;
     public static GeneratedTile prevClosestGeneratedTile;
-    public static int treeDensity = 2;
+    public static int treeProbability = 90;
 
     public static bool IsFirstTime = true;
 
+    //Biome variables
+    public static int biomeProbability = 999;
+
     void Start()
     {
-        for (int i = -tileScale * generateRange; i < tileScale * generateRange; i += tileScale)
+        for (int i = -tileScale * (generateRange + 1); i < tileScale * (generateRange + 1); i += tileScale)
         {
             for (int j = - tileScale * generateRange; j < tileScale * generateRange; j+=tileScale)
             {
@@ -65,11 +69,112 @@ public class TerrainGeneratingScript : MonoBehaviour
         for (int i = 0; i < TreeGenerationScript.allWorldOBjectsList.Count; i++)
         {
             GameObject curr = TreeGenerationScript.allWorldOBjectsList[i];
-            if (curr.transform.position.x >= xStart && curr.transform.position.x <= xEnd &&
-                curr.transform.position.y >= yStart && curr.transform.position.y <= yEnd)
+            Vector3 treePosVector = curr.transform.GetChild(0).transform.position;
+
+            if (treePosVector.x >= xStart && treePosVector.x <= xEnd &&
+                treePosVector.y >= yStart && treePosVector.y <= yEnd)
                 return true;
         }
         return false;
+    }
+
+    bool isThereAnotherTileOnCoord(int x, int y)
+    {
+        if(Physics.Raycast(new Vector3(x, y, -4.5f), Vector3.forward))
+            return true;
+
+        return false;
+    }
+
+    void GenerateBiome(int x, int y)
+    {
+        int biomeLength = Random.RandomRange(15, 70);
+        for (int i = 0; i < biomeLength; i++)
+        {
+            if (!isThereAnotherTileOnCoord(x + tileScale * i, y))
+            {
+                GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
+                              new Vector3(x + tileScale * i, y, -4f), Quaternion.identity);
+                allGeneratedTiles.Add(new GeneratedTile(x + tileScale * i, y, "Sand", tile));
+            }
+        }
+
+        //Generate upper half of the biome
+        int upperHalfVar = Random.RandomRange(15, 70);
+        int outerBiomeLength = biomeLength;
+        int xCoord = x;
+        int yCoord = y;
+        for (int i = 0; i < upperHalfVar; i++)
+        {
+            int tileTypeCase = Random.RandomRange(1, 4);
+
+            if (tileTypeCase == 1)
+            {
+                xCoord -= tileScale;
+                yCoord += tileScale;
+            }
+            else if (tileTypeCase == 2)
+            {
+                yCoord += tileScale;
+            }
+            else if (tileTypeCase == 3)
+            {
+                xCoord += tileScale;
+                yCoord += tileScale;
+            }
+
+            int innerBiomeLength = Random.RandomRange(outerBiomeLength - 1, outerBiomeLength + 2);
+
+            for (int j = 0; j < innerBiomeLength; j++)
+            {
+                if (!isThereAnotherTileOnCoord(xCoord + tileScale * j, yCoord))
+                {
+                    GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
+                                 new Vector3(xCoord + tileScale * j, yCoord, -4f), Quaternion.identity);
+                    allGeneratedTiles.Add(new GeneratedTile(xCoord + tileScale * j, yCoord, "Sand", tile));
+                }
+            }
+            outerBiomeLength = innerBiomeLength;
+        }
+
+        //Generate lower half of the biome
+        int lowerHalfVar = Random.RandomRange(15, 70);
+        xCoord = x;
+        yCoord = y;
+        outerBiomeLength = biomeLength;
+        for (int i = 0; i < lowerHalfVar; i++)
+        {
+            int tileTypeCase = Random.RandomRange(1, 4);
+
+            if (tileTypeCase == 1)
+            {
+                xCoord -= tileScale;
+                yCoord -= tileScale;
+            }
+            else if (tileTypeCase == 2)
+            {
+                yCoord -= tileScale;
+            }
+            else if (tileTypeCase == 3)
+            {
+                xCoord += tileScale;
+                yCoord -= tileScale;
+            }
+
+            int innerBiomeLength = Random.RandomRange(outerBiomeLength - 1, outerBiomeLength + 2);
+
+            for (int j = 0; j < innerBiomeLength; j++)
+            {
+                if (!isThereAnotherTileOnCoord(xCoord + tileScale * j, yCoord))
+                {
+                    GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
+                                        new Vector3(xCoord + tileScale * j, yCoord, -4f), Quaternion.identity);
+                    allGeneratedTiles.Add(new GeneratedTile(xCoord + tileScale * j, yCoord, "Sand", tile));
+                }
+
+            }
+            outerBiomeLength = innerBiomeLength;
+        }
     }
 
     void GenerateTiles(GeneratedTile currentTile)
@@ -81,23 +186,38 @@ public class TerrainGeneratingScript : MonoBehaviour
             {
                 if(!IsTileInList(j, i))
                 {
-                    GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/GrassTerrainGO", typeof(GameObject)) as GameObject,
-                                      new Vector3(j, i, -4f), Quaternion.identity);
-                    allGeneratedTiles.Add(new GeneratedTile(j, i, "Grass", tile));
+                    int biomeVar = Random.RandomRange(0, 1000);
 
-                    if (!IsThereTreeOnTile(j - tileScale / 2, j + tileScale / 2, i - tileScale / 2, i + tileScale / 2))
+                    if(biomeVar >= biomeProbability)
                     {
-                        int treeCountOnTile = Random.RandomRange(1, treeDensity);
-                        // Trees are generated inappropriate
-                        for (int k = 0; k < treeCountOnTile; k++)
+                        GenerateBiome(j, i);
+                    }
+                    else
+                    {
+                        float angleRand = Random.RandomRange(0, 4);
+
+                        GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/GrassTerrainGO", typeof(GameObject)) as GameObject,
+                                          new Vector3(j, i, -4f), Quaternion.Euler(0, 0, 90 * angleRand));
+                        allGeneratedTiles.Add(new GeneratedTile(j, i, "Grass", tile));
+
+                        if (!IsThereTreeOnTile(j - tileScale / 2, j + tileScale / 2, i - tileScale / 2, i + tileScale / 2))
                         {
-                            float xCoord = Random.RandomRange(j - tileScale / 2, j + tileScale / 2);
-                            float yCoord = Random.RandomRange(i - tileScale / 2, i + tileScale / 2);
+                            int treeProbabilityOnTile = Random.RandomRange(1, 100);
 
-                            GameObject currTree = Instantiate(Resources.Load("Objects/FruitTree", typeof(GameObject)) as GameObject,
-                                                              new Vector3(xCoord, yCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+                            if (treeProbabilityOnTile >= treeProbability)
+                            {
+                                float xCoord = Random.RandomRange(j - tileScale / 2.5f, j + tileScale / 2.5f);
+                                float yCoord = Random.RandomRange(i - tileScale / 2.5f, i + tileScale / 2.5f);
 
-                            TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                                GameObject currTree = Instantiate(Resources.Load("Objects/FruitTree", typeof(GameObject)) as GameObject,
+                                                                  new Vector3(xCoord, yCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+
+                                //Move tree on its actual visual position
+                                currTree.transform.position += Quaternion.Euler(0, 0, EnemyClassScript.character.transform.eulerAngles.z) * new Vector3(0.18f, 1.4f, 0);
+
+                                TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                            }
+
                         }
                     }
 
@@ -116,7 +236,7 @@ public class TerrainGeneratingScript : MonoBehaviour
         if(currClosestGeneratedTile.getXCoord() != prevClosestGeneratedTile.getXCoord() ||
            currClosestGeneratedTile.getYCoord() != prevClosestGeneratedTile.getYCoord())
         {
-            RemoveTilesOutOfRange();
+            //RemoveTilesOutOfRange();
             GenerateTiles(currClosestGeneratedTile);
             //print(allGeneratedTiles.Count); //Debug reasons
         }
