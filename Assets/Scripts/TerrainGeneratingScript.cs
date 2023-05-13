@@ -12,6 +12,8 @@ public class TerrainGeneratingScript : MonoBehaviour
     public static GeneratedTile prevClosestGeneratedTile;
     public static int treeProbability = 90;
 
+    public static int cactusProbability = 90;
+
     public static bool IsFirstTime = true;
 
     //Biome variables
@@ -96,6 +98,21 @@ public class TerrainGeneratingScript : MonoBehaviour
                 GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
                               new Vector3(x + tileScale * i, y, -4f), Quaternion.identity);
                 allGeneratedTiles.Add(new GeneratedTile(x + tileScale * i, y, "Sand", tile));
+
+                int cactusProbabilityOnTile = Random.RandomRange(1, 100);
+
+                if (cactusProbabilityOnTile >= cactusProbability)
+                {
+                    float xCCoord = Random.RandomRange(x + tileScale * i - tileScale / 2.5f, x + tileScale * i + tileScale / 2.5f);
+                    float ycCoord = Random.RandomRange(y - tileScale / 2.5f, y + tileScale / 2.5f);
+
+                    GameObject currTree = Instantiate(Resources.Load("Objects/Cactus", typeof(GameObject)) as GameObject,
+                                                      new Vector3(xCCoord, ycCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+
+                    //Move cactus on its actual visual position
+                    currTree.transform.position += Quaternion.Euler(0, 0, EnemyClassScript.character.transform.eulerAngles.z) * new Vector3(0.18f, 1.4f, 0);
+                    TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                }
             }
         }
 
@@ -132,6 +149,21 @@ public class TerrainGeneratingScript : MonoBehaviour
                     GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
                                  new Vector3(xCoord + tileScale * j, yCoord, -4f), Quaternion.identity);
                     allGeneratedTiles.Add(new GeneratedTile(xCoord + tileScale * j, yCoord, "Sand", tile));
+
+                    int cactusProbabilityOnTile = Random.RandomRange(1, 100);
+
+                    if (cactusProbabilityOnTile >= cactusProbability)
+                    {
+                        float xCCoord = Random.RandomRange(xCoord + tileScale * j - tileScale / 2.5f, xCoord + tileScale * j + tileScale / 2.5f);
+                        float ycCoord = Random.RandomRange(yCoord - tileScale / 2.5f, yCoord + tileScale / 2.5f);
+
+                        GameObject currTree = Instantiate(Resources.Load("Objects/Cactus", typeof(GameObject)) as GameObject,
+                                                          new Vector3(xCCoord, ycCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+
+                        //Move cactus on its actual visual position
+                        currTree.transform.position += Quaternion.Euler(0, 0, EnemyClassScript.character.transform.eulerAngles.z) * new Vector3(0.18f, 1.4f, 0);
+                        TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                    }
                 }
             }
             outerBiomeLength = innerBiomeLength;
@@ -170,6 +202,21 @@ public class TerrainGeneratingScript : MonoBehaviour
                     GameObject tile = Instantiate(Resources.Load("Objects/PixelArt/Terrains/SandTerrainGO", typeof(GameObject)) as GameObject,
                                         new Vector3(xCoord + tileScale * j, yCoord, -4f), Quaternion.identity);
                     allGeneratedTiles.Add(new GeneratedTile(xCoord + tileScale * j, yCoord, "Sand", tile));
+
+                    int cactusProbabilityOnTile = Random.RandomRange(1, 100);
+
+                    if (cactusProbabilityOnTile >= cactusProbability)
+                    {
+                        float xCCoord = Random.RandomRange(xCoord + tileScale * j - tileScale / 2.5f, xCoord + tileScale * j + tileScale / 2.5f);
+                        float ycCoord = Random.RandomRange(yCoord - tileScale / 2.5f, yCoord + tileScale / 2.5f);
+
+                        GameObject currTree = Instantiate(Resources.Load("Objects/Cactus", typeof(GameObject)) as GameObject,
+                                                          new Vector3(xCCoord, ycCoord, -5f), Quaternion.Euler(0, 0, EnemyClassScript.character.eulerAngles.z));
+
+                        //Move cactus on its actual visual position
+                        currTree.transform.position += Quaternion.Euler(0, 0, EnemyClassScript.character.transform.eulerAngles.z) * new Vector3(0.18f, 1.4f, 0);
+                        TreeGenerationScript.allWorldOBjectsList.Add(currTree);
+                    }
                 }
 
             }
