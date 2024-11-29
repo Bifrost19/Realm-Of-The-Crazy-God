@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.U2D;
 
 public class TerrainGeneratingScript : MonoBehaviour
@@ -298,147 +300,27 @@ public class TerrainGeneratingScript : MonoBehaviour
         else return 0;
     }
 
+    int RoundToClosestIntTileScaleNum(float num) //Work for tileScale = 2
+    {
+        int intNum = Mathf.RoundToInt(num);
+        if (intNum % tileScale == 0) return intNum;
+
+        int negativeSign = tileScale/2;
+        if (intNum < 0) negativeSign = -tileScale/2;
+
+        return (Mathf.Abs(intNum) - Mathf.Abs(num) < 0)? intNum + negativeSign : intNum - negativeSign;
+    }
+
     int FindTheClosestTileToPlayer()
     {
         float playerXCoord = GameObject.Find("Player").transform.position.x;
         float playerYCoord = GameObject.Find("Player").transform.position.y;
+        int localXCoord = RoundToClosestIntTileScaleNum(playerXCoord);
+        int localYCoord = RoundToClosestIntTileScaleNum(playerYCoord); ;
 
-        float localXCoord;
-        float localYCoord;
-        float prevLocalXCoord;
-        float prevLocalYCoord;
-        float localCoordDifference = 0;
-        float prevLocalCoordDifference = 0;
-
-        // case +1 +1
-        for (int i = Mathf.RoundToInt(playerXCoord); ; i++)
-        {
-            if(i % tileScale == 0)
-            {
-                localXCoord = i;
-                prevLocalXCoord = i;
-                localCoordDifference += EvaluateDifference(playerXCoord, localXCoord);
-                break;
-            }
-        }
-
-        for (int i = Mathf.RoundToInt(playerYCoord); ; i++)
-        {
-            if (i % tileScale == 0)
-            {
-                localYCoord = i;
-                prevLocalYCoord = i;
-                localCoordDifference += EvaluateDifference(playerYCoord, localYCoord);
-                break;
-            }
-        }
-        prevLocalCoordDifference = localCoordDifference;
-        localCoordDifference = 0;
-        ////////////////////////
-        ///case +1 -1
-        for (int i = Mathf.RoundToInt(playerXCoord); ; i++)
-        {
-            if (i % tileScale == 0)
-            {
-                localXCoord = i;
-                localCoordDifference += EvaluateDifference(playerXCoord, localXCoord);
-                break;
-            }
-        }
-
-        for (int i = Mathf.RoundToInt(playerYCoord); ; i--)
-        {
-            if (i % tileScale == 0)
-            {
-                localYCoord = i;
-                localCoordDifference += EvaluateDifference(playerYCoord, localYCoord);
-                break;
-            }
-        }
-
-        if(localCoordDifference > prevLocalCoordDifference)
-        {
-            localXCoord = prevLocalXCoord;
-            localYCoord = prevLocalYCoord;
-            localCoordDifference = 0;
-        }
-        else
-        {
-            prevLocalXCoord = localXCoord;
-            prevLocalYCoord = localYCoord;
-            prevLocalCoordDifference = localCoordDifference;
-            localCoordDifference = 0;
-        }
-        ///////////////////////////////
-        ///case -1 +1
-        for (int i = Mathf.RoundToInt(playerXCoord); ; i--)
-        {
-            if (i % tileScale == 0)
-            {
-                localXCoord = i;
-                localCoordDifference += EvaluateDifference(playerXCoord, localXCoord);
-                break;
-            }
-        }
-
-        for (int i = Mathf.RoundToInt(playerYCoord); ; i++)
-        {
-            if (i % tileScale == 0)
-            {
-                localYCoord = i;
-                localCoordDifference += EvaluateDifference(playerYCoord, localYCoord);
-                break;
-            }
-        }
-
-        if (localCoordDifference > prevLocalCoordDifference)
-        {
-            localXCoord = prevLocalXCoord;
-            localYCoord = prevLocalYCoord;
-            localCoordDifference = 0;
-        }
-        else
-        {
-            prevLocalXCoord = localXCoord;
-            prevLocalYCoord = localYCoord;
-            prevLocalCoordDifference = localCoordDifference;
-            localCoordDifference = 0;
-        }
-        ///////////////////////////////
-        ///case -1 -1
-        for (int i = Mathf.RoundToInt(playerXCoord); ; i--)
-        {
-            if (i % tileScale == 0)
-            {
-                localXCoord = i;
-                localCoordDifference += EvaluateDifference(playerXCoord, localXCoord);
-                break;
-            }
-        }
-
-        for (int i = Mathf.RoundToInt(playerYCoord); ; i--)
-        {
-            if (i % tileScale == 0)
-            {
-                localYCoord = i;
-                localCoordDifference += EvaluateDifference(playerYCoord, localYCoord);
-                break;
-            }
-        }
-
-        if (localCoordDifference > prevLocalCoordDifference)
-        {
-            localXCoord = prevLocalXCoord;
-            localYCoord = prevLocalYCoord;
-            localCoordDifference = 0;
-        }
-        else
-        {
-            prevLocalXCoord = localXCoord;
-            prevLocalYCoord = localYCoord;
-            prevLocalCoordDifference = localCoordDifference;
-            localCoordDifference = 0;
-        }
+        //Future ideas
+        //Dictionary<Tuple<int, int>, GameObject> map = new Dictionary<Tuple<int, int>, GameObject>();
+        //map.Add(new Tuple<int, int>( -1,1), null);
 
         //Search for coordinates in the list
         for (int i = 0; i < allGeneratedTiles.Count; i++)
@@ -446,7 +328,6 @@ public class TerrainGeneratingScript : MonoBehaviour
             if (localXCoord == allGeneratedTiles[i].getXCoord() && localYCoord == allGeneratedTiles[i].getYCoord())
                 return i;
         }
-
         return 0;
     }
 
